@@ -1,5 +1,5 @@
 // count-beans.js - two character counting functions
-// countBs version 2, uses countChar
+// countBs version 3, explicit for loop
 
 // SPOILER WARNING
 // A solution to Eloquent Javascript Chapter 3
@@ -11,17 +11,12 @@ var countBs = function (s) {
 
 // countChar(str, c) - number of characters, c,in string str
 var countChar = function (s, c) {
-  // recursive implementation because it is fun and easy,
-  // even though it fills up the stack
   var len = s.length;
-  var capChar; // counts any c at the end of the string
-  if (len == 0)
-    return 0;
-  if (s.charAt(len -1) == c)
-    capChar = 1;
-  else
-    capChar = 0;
-  return capChar + countChar(s.substr(0, s.length - 1), c);
+  var count = 0; // counts c
+  for (var i = 0; i < len; i++)
+    if (s.charAt(i) == c)
+      count++;
+  return count;
 }
 
 // tests
