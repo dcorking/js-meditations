@@ -4,11 +4,11 @@
 // A solution to Eloquent Javascript Chapter 2
 
 // To use:
-// Set the board size on line 23
+// Set the board size on line 22
 // > eval (fs.readFileSync('./chessboard.js') + '');
 // undefined
 // > require ("./chessboard.js")
-// console.log(board)
+// > console.log(board)
 
 var board = function (size) {
   var str = "";
