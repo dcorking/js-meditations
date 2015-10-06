@@ -11,4 +11,23 @@ BG.redSquare = function (ctx){
   ctx.closePath();
   };
 
+
+// Why doesn't this work?
+// function foo (ctx) {
+//   ctx.beginPath();
+//   ctx.arc(240, 160, 20, 0, Math.PI*2, false);
+//   ctx.fillStyle= "green";
+//   ctx.fill();
+//   ctx.closePath();
+//   }(BG.ctx);
+
+BG.greenSquare = function (ctx){
+  ctx.beginPath();
+  ctx.arc(240, 160, 20, 0, Math.PI*2, false);
+  ctx.fillStyle= "green";
+  ctx.fill();
+  ctx.closePath();
+  }
+
 BG.redSquare(BG.ctx);
+BG.greenSquare(BG.ctx);
