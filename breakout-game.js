@@ -15,17 +15,32 @@ var BG = {}; // global container for game code
 BG.canvas = document.getElementById("myCanvas");
 BG.ctx = BG.canvas.getContext("2d");
 
-BG.ball = {};
-BG.ball.draw = function (ctx){
+BG.ball = {
+  // position
+  x: BG.canvas.width / 2,
+  y: BG.canvas.height - 30,
+  // velocity
+  dx: 2,
+  dy: -2
+};
+
+BG.ball.draw = function (ctx) {
   ctx.beginPath();
-  ctx.arc(50, 50, 10, 0, Math.PI*2);
-  ctx.fillStyle = "#0095dd"
+  ctx.arc(this.x, this.y, 10, 0, Math.PI*2);
+  ctx.fillStyle = "#0095DD"
   ctx.fill();
   ctx.closePath();
-  }
+}
+
+BG.ball.step = function () {
+  this.x += this.dx;
+  this.y += this.dy;
+}
 
 BG.draw = function () {
+  BG.ctx.clearRect(0, 0, BG.canvas.width, BG.canvas.height);
   BG.ball.draw(BG.ctx);
-  }
+  BG.ball.step()
+}
 
 setInterval(BG.draw, 10);
