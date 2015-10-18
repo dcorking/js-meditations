@@ -94,9 +94,13 @@ BG.paddle.draw = function (ctx) {
 };
 
 BG.paddle.step = function () {
-  if (rightPressed) {this.x += this.speed;};
-  if (leftPressed) {this.x -= this.speed;};
+  if (rightPressed && this.x + this.width < BG.canvas.width ) {
+    this.x += this.speed;
   };
+  if (leftPressed && this.x > 0) {
+    this.x -= this.speed;
+  };
+};
 
 // Draw the world, then update it
 BG.draw = function () {
@@ -113,10 +117,8 @@ BG.draw = function () {
 };
 
 
-  document.addEventListener("keydown", keyDownHandler, false);
-  document.addEventListener("keyup", keyUpHandler, false);
-
-
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
 
 setInterval(
   function(){BG.draw();},
