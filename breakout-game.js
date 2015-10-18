@@ -11,6 +11,8 @@
 // https://developer.mozilla.org/en-US/docs/Games/Workflows/2D_Breakout_game_pure_JavaScript
 
 var BG = {}; // global container for game code
+var rightPressed = false;
+var leftPressed = false;
 
 BG.canvas = document.getElementById("myCanvas");
 BG.ctx = BG.canvas.getContext("2d");
@@ -28,28 +30,42 @@ BG.ball = {
 BG.ball.draw = function (ctx) {
   ctx.beginPath();
   ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
-  ctx.fillStyle = "#0095DD"
+  ctx.fillStyle = "#0095DD";
   ctx.fill();
   ctx.closePath();
-  console.log(this);
 };
 
 BG.ball.step = function () {
   // collision with top - TODO poss. refactor to avoid referring
   // directly to BG ?
-  // TODO ball is prone to getting stuck in the corners
   if (this.y - this.radius + this.dy < 0 ||
       this.y + this.radius + this.dy > BG.canvas.height ) {
         this.dy = - this.dy;
       };
   // collision with sides
   if (this.x - this.radius + this.dx < 0 ||
-      this.x + this.radius + this.dy > BG.canvas.width ) {
+      this.x + this.radius + this.dx > BG.canvas.width ) {
     this.dx = - this.dx;
   };
   this.x += this.dx;
   this.y += this.dy;
 };
+
+BG.paddle = {
+  height: 10,
+  width: 75 };
+
+BG.paddle.x = (BG.canvas.width - BG.paddle.width ) / 2;
+
+BG.paddle.draw = function (ctx) {
+  ctx.beginPath();
+  ctx.rect(this.x,
+           BG.canvas.height - this.height,
+           this.width, this.height);
+  ctx.fillStyle = "#0095DD";
+  ctx.fill();
+  ctx.closePath();
+}
 
 // Draw the world, then update it
 BG.draw = function () {
@@ -60,9 +76,31 @@ BG.draw = function () {
   // then 'this' does indeed become the game object.
   BG.ctx.clearRect(0, 0, BG.canvas.width, BG.canvas.height);
   BG.ball.draw(BG.ctx);
-  BG.ball.step()
+  BG.ball.step();
+  BG.paddle.draw(BG.ctx);
+};
+
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
+
+var keyDownHandler = function (e) {
+  if(e.keyCode == 39) {
+    rightPressed = true;
+  }
+  else if(e.keyCode ==37) {
+    leftPressed = true;
+  }
+};
+
+var keyUpHandler = function (e) {
+  if(e.keyCode == 39) {
+    rightPressed = false;
+  }
+  else if(e.keyCode ==37) {
+    leftPressed = false;
+  }
 };
 
 setInterval(
-  function(){BG.draw()},
-  30);
+  function(){BG.draw();},
+  5);
