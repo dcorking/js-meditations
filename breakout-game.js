@@ -38,15 +38,23 @@ BG.keyUpHandler = function (e) {
 BG.canvas = document.getElementById("myCanvas");
 BG.ctx = BG.canvas.getContext("2d");
 
-// initialize ball
+// constants
+BG.paddle = {
+  height: 10,
+  width: 75,
+  speed: 3};
 BG.ball = {
-  // position
-  x: BG.canvas.width / 2,
-  y: BG.canvas.height - 30,
-  // velocity
-  dx: 2,
-  dy: -2,
-};
+  radius: 10};
+//initialize game
+BG.score = 0;
+BG.gameOver = false;
+// initialize ball
+// velocity
+BG.ball.dx = 2;  // rightwards
+BG.ball.dy = -2; // upwards
+// position
+BG.ball.x = BG.canvas.width / 2;
+BG.ball.y = BG.canvas.height - BG.paddle.height - BG.ball.radius + BG.ball.dy;
 
 BG.ball.draw = function (ctx) {
   ctx.beginPath();
@@ -57,27 +65,33 @@ BG.ball.draw = function (ctx) {
 };
 
 BG.ball.step = function () {
-  // collision with top - TODO poss. refactor to avoid referring
+  // TODO poss. refactor to avoid referring
   // directly to BG ?
-  if (this.y - this.radius + this.dy < 0 ||
-      this.y + this.radius + this.dy > BG.canvas.height ) {
-        this.dy = - this.dy;
-      };
+  // collision with top
+  if (this.y - this.radius + this.dy < 0) {
+    this.dy = - this.dy;
+  };
+  // collision with paddle - y too big
+  if ((this.y + this.radius + this.dy + BG.paddle.height >
+      BG.canvas.height)    &&
+      this.x > BG.paddle.x &&
+      this.x - BG.paddle.x < BG.paddle.width) {
+    this.dy = - this.dy;
+  };
   // collision with sides
   if (this.x - this.radius + this.dx < 0 ||
       this.x + this.radius + this.dx > BG.canvas.width ) {
     this.dx = - this.dx;
   };
+  //only one ball, so lose it and it's game over
+  if (this.y + this.radius + this.dy > BG.canvas.height ) {
+    BG.gameOver = true
+    };
+  //move
   this.x += this.dx;
   this.y += this.dy;
 };
 
-// constants
-BG.ball.radius = 10;
-BG.paddle = {
-  height: 10,
-  width: 75,
-  speed: 3};
 
 BG.paddle.draw = function (ctx) {
   ctx.beginPath();
@@ -105,12 +119,18 @@ BG.draw = function () {
   // When I wrap the callback in setInterval to an anonymous function, so:
   //    function(){BG.draw()}
   // then 'this' does indeed become the game object.
-  console.log("arrow keys: " + BG.rightPressed + BG.leftPressed);
+
+  if (! BG.gameOver) {
   BG.ctx.clearRect(0, 0, BG.canvas.width, BG.canvas.height);
   BG.ball.draw(BG.ctx);
   BG.ball.step();
   BG.paddle.draw(BG.ctx);
   BG.paddle.step();
+    }
+  else {
+    window.clearInterval(BG.drawAction); // stop the world
+    document.write ("<p>Game over!</p><p>Reload page to play again.</p>");
+  };
 };
 
 ////////////////////////////////////////////////////////
@@ -123,6 +143,7 @@ document.addEventListener("keyup", BG.keyUpHandler, false);
 // paddle starts in middle
 BG.paddle.x = (BG.canvas.width - BG.paddle.width ) / 2;
 
-setInterval(
+// repeatedly draw and update the world
+BG.drawAction = window.setInterval(
   function(){BG.draw();},
   5);
