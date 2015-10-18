@@ -10,35 +10,35 @@
 // following the tutorial at
 // https://developer.mozilla.org/en-US/docs/Games/Workflows/2D_Breakout_game_pure_JavaScript
 
-var BG = {}; // global container for game code
-var rightPressed = false;
-var leftPressed = false;
+// global singleton to contain game
+var BG = {
+  rightPressed: false,
+  leftPressed: false
+};
 
 // event handlers must be defined before they are registered
-var keyDownHandler = function (e) {
-  console.log ("code: " + e.keyCode);
+BG.keyDownHandler = function (e) {
   if(e.keyCode == 39) {
-    rightPressed = true;
+    BG.rightPressed = true;
   }
   else if(e.keyCode == 37) {
-    leftPressed = true;
+    BG.leftPressed = true;
   }
 };
 
-var keyUpHandler = function (e) {
+BG.keyUpHandler = function (e) {
   if(e.keyCode == 39) {
-    rightPressed = false;
+    BG.rightPressed = false;
   }
   else if(e.keyCode == 37) {
-    leftPressed = false;
+    BG.leftPressed = false;
   }
 };
-
-
 
 BG.canvas = document.getElementById("myCanvas");
 BG.ctx = BG.canvas.getContext("2d");
 
+// initialize ball
 BG.ball = {
   // position
   x: BG.canvas.width / 2,
@@ -46,7 +46,6 @@ BG.ball = {
   // velocity
   dx: 2,
   dy: -2,
-  radius: 10
 };
 
 BG.ball.draw = function (ctx) {
@@ -73,17 +72,14 @@ BG.ball.step = function () {
   this.y += this.dy;
 };
 
+// constants
+BG.ball.radius = 10;
 BG.paddle = {
   height: 10,
   width: 75,
   speed: 3};
 
-BG.paddle.x = (BG.canvas.width - BG.paddle.width ) / 2;
-
 BG.paddle.draw = function (ctx) {
-  console.log("paddle x: " + this.x +
-              "; right? " + rightPressed.toString() +
-             "; left? " + leftPressed);
   ctx.beginPath();
   ctx.rect(this.x,
            BG.canvas.height - this.height,
@@ -94,10 +90,10 @@ BG.paddle.draw = function (ctx) {
 };
 
 BG.paddle.step = function () {
-  if (rightPressed && this.x + this.width < BG.canvas.width ) {
+  if (BG.rightPressed && this.x + this.width < BG.canvas.width ) {
     this.x += this.speed;
   };
-  if (leftPressed && this.x > 0) {
+  if (BG.leftPressed && this.x > 0) {
     this.x -= this.speed;
   };
 };
@@ -109,6 +105,7 @@ BG.draw = function () {
   // When I wrap the callback in setInterval to an anonymous function, so:
   //    function(){BG.draw()}
   // then 'this' does indeed become the game object.
+  console.log("arrow keys: " + BG.rightPressed + BG.leftPressed);
   BG.ctx.clearRect(0, 0, BG.canvas.width, BG.canvas.height);
   BG.ball.draw(BG.ctx);
   BG.ball.step();
@@ -116,9 +113,15 @@ BG.draw = function () {
   BG.paddle.step();
 };
 
+////////////////////////////////////////////////////////
+// Main program
+////////////////////////////////////////////////////////
 
-document.addEventListener("keydown", keyDownHandler, false);
-document.addEventListener("keyup", keyUpHandler, false);
+document.addEventListener("keydown", BG.keyDownHandler, false);
+document.addEventListener("keyup", BG.keyUpHandler, false);
+
+// paddle starts in middle
+BG.paddle.x = (BG.canvas.width - BG.paddle.width ) / 2;
 
 setInterval(
   function(){BG.draw();},
