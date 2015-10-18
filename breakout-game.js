@@ -14,6 +14,28 @@ var BG = {}; // global container for game code
 var rightPressed = false;
 var leftPressed = false;
 
+// event handlers must be defined before they are registered
+var keyDownHandler = function (e) {
+  console.log ("code: " + e.keyCode);
+  if(e.keyCode == 39) {
+    rightPressed = true;
+  }
+  else if(e.keyCode == 37) {
+    leftPressed = true;
+  }
+};
+
+var keyUpHandler = function (e) {
+  if(e.keyCode == 39) {
+    rightPressed = false;
+  }
+  else if(e.keyCode == 37) {
+    leftPressed = false;
+  }
+};
+
+
+
 BG.canvas = document.getElementById("myCanvas");
 BG.ctx = BG.canvas.getContext("2d");
 
@@ -53,11 +75,15 @@ BG.ball.step = function () {
 
 BG.paddle = {
   height: 10,
-  width: 75 };
+  width: 75,
+  speed: 3};
 
 BG.paddle.x = (BG.canvas.width - BG.paddle.width ) / 2;
 
 BG.paddle.draw = function (ctx) {
+  console.log("paddle x: " + this.x +
+              "; right? " + rightPressed.toString() +
+             "; left? " + leftPressed);
   ctx.beginPath();
   ctx.rect(this.x,
            BG.canvas.height - this.height,
@@ -65,7 +91,12 @@ BG.paddle.draw = function (ctx) {
   ctx.fillStyle = "#0095DD";
   ctx.fill();
   ctx.closePath();
-}
+};
+
+BG.paddle.step = function () {
+  if (rightPressed) {this.x += this.speed;};
+  if (leftPressed) {this.x -= this.speed;};
+  };
 
 // Draw the world, then update it
 BG.draw = function () {
@@ -78,28 +109,14 @@ BG.draw = function () {
   BG.ball.draw(BG.ctx);
   BG.ball.step();
   BG.paddle.draw(BG.ctx);
+  BG.paddle.step();
 };
 
-document.addEventListener("keydown", keyDownHandler, false);
-document.addEventListener("keyup", keyUpHandler, false);
 
-var keyDownHandler = function (e) {
-  if(e.keyCode == 39) {
-    rightPressed = true;
-  }
-  else if(e.keyCode ==37) {
-    leftPressed = true;
-  }
-};
+  document.addEventListener("keydown", keyDownHandler, false);
+  document.addEventListener("keyup", keyUpHandler, false);
 
-var keyUpHandler = function (e) {
-  if(e.keyCode == 39) {
-    rightPressed = false;
-  }
-  else if(e.keyCode ==37) {
-    leftPressed = false;
-  }
-};
+
 
 setInterval(
   function(){BG.draw();},
