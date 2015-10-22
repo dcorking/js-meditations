@@ -55,6 +55,9 @@ BG.ball.dy = -2; // upwards
 // position
 BG.ball.x = BG.canvas.width / 2;
 BG.ball.y = BG.canvas.height - BG.paddle.height - BG.ball.radius + BG.ball.dy;
+// paddle starts in middle
+BG.paddle.x = (BG.canvas.width - BG.paddle.width ) / 2;
+
 
 BG.ball.draw = function (ctx) {
   ctx.beginPath();
@@ -139,9 +142,6 @@ BG.draw = function () {
 
 document.addEventListener("keydown", BG.keyDownHandler, false);
 document.addEventListener("keyup", BG.keyUpHandler, false);
-
-// paddle starts in middle
-BG.paddle.x = (BG.canvas.width - BG.paddle.width ) / 2;
 
 // repeatedly draw and update the world
 BG.drawAction = window.setInterval(
