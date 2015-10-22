@@ -53,12 +53,15 @@ sg.ball = {
 sg.score = 0;
 sg.gameOver = false;
 // initialize ball
-// velocity
-sg.ball.dx = 2;  // rightwards
-sg.ball.dy = -2; // upwards
-// position
-sg.ball.x = sg.canvas.width / 2;
-sg.ball.y = sg.canvas.height - sg.paddle.height - sg.ball.radius + sg.ball.dy;
+sg.ball.initialize = function () {
+  // velocity
+  sg.ball.dx = 2;  // rightwards
+  sg.ball.dy = -2; // upwards
+  // position
+  sg.ball.x = sg.canvas.width / 2;
+  sg.ball.y = sg.canvas.height - sg.paddle.height - sg.ball.radius + sg.ball.dy;
+};
+sg.ball.initialize();
 // paddle starts in middle
 sg.paddle.x = (sg.canvas.width - sg.paddle.width ) / 2;
 
@@ -90,9 +93,11 @@ sg.ball.step = function () {
       this.x + this.radius + this.dx > sg.canvas.width ) {
     this.dx = - this.dx;
   };
-  //only one ball, so lose it and it's game over
+  // lose the ball and lose a point
   if (this.y + this.radius + this.dy > sg.canvas.height ) {
-    sg.gameOver = true
+    sg.score -= 1
+    // restart ball
+    this.initialize();
     };
   //move
   this.x += this.dx;
@@ -140,6 +145,10 @@ sg.draw = function () {
   };
 };
 
+var displayScore = function () {
+  // TODO
+}
+
 ////////////////////////////////////////////////////////
 // Main program
 ////////////////////////////////////////////////////////
@@ -149,5 +158,8 @@ document.addEventListener("keyup", sg.keyUpHandler, false);
 
 // repeatedly draw and update the world
 sg.drawAction = window.setInterval(
-  function(){sg.draw();},
+  function(){
+    sg.draw();
+    displayScore();
+  },
   5);
