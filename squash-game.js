@@ -62,6 +62,7 @@ sg.ball.initialize = function () {
   sg.ball.y = sg.canvas.height - sg.paddle.height - sg.ball.radius + sg.ball.dy;
 };
 sg.ball.initialize();
+
 // paddle starts in middle
 sg.paddle.x = (sg.canvas.width - sg.paddle.width ) / 2;
 
@@ -77,6 +78,7 @@ sg.ball.draw = function (ctx) {
 sg.ball.step = function () {
   // TODO poss. refactor to avoid referring
   // directly to sg ?
+  //////////////////////////////
   // collision with top
   if (this.y - this.radius + this.dy < 0) {
     this.dy = - this.dy;
@@ -96,6 +98,8 @@ sg.ball.step = function () {
   // lose the ball and lose a point
   if (this.y + this.radius + this.dy > sg.canvas.height ) {
     sg.score -= 1
+    // TODO pause
+
     // restart ball
     this.initialize();
     };
@@ -124,6 +128,20 @@ sg.paddle.step = function () {
   };
 };
 
+sg.walls = {
+  width: 10
+};
+sg.walls.draw = function (ctx) {
+  ctx.beginPath();
+  ctx.rect(0, 0, this.width, sg.canvas.height);
+  ctx.rect(0, 0, sg.canvas.width, this.width);
+  ctx.rect(sg.canvas.width - this.width, 0,
+           sg.canvas.width, sg.canvas.height);
+  ctx.fillStyle = "#0095DD";
+  ctx.fill();
+  ctx.closePath();
+};
+
 // Draw the world, then update it
 sg.draw = function () {
   // When setInterval invokes sg.draw, 'this' is the global object
@@ -147,7 +165,7 @@ sg.draw = function () {
 
 var displayScore = function () {
   // TODO
-}
+};
 
 ////////////////////////////////////////////////////////
 // Main program
