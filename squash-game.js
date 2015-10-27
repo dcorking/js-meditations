@@ -28,6 +28,9 @@ sg.keyDownHandler = function (e) {
   else if(e.keyCode == 37) {
     sg.leftPressed = true;
   }
+  else if(e.keyCode == 32) {
+    sg.paused = ! sg.paused;
+  };
 };
 
 sg.keyUpHandler = function (e) {
@@ -36,7 +39,7 @@ sg.keyUpHandler = function (e) {
   }
   else if(e.keyCode == 37) {
     sg.leftPressed = false;
-  }
+  };
 };
 
 sg.canvas = document.getElementById("myCanvas");
@@ -51,6 +54,7 @@ sg.ball = {
   radius: 10};
 //initialize game
 sg.score = 0;
+sg.paused = false;
 sg.gameOver = false;
 // initialize ball
 sg.ball.initialize = function () {
@@ -151,12 +155,13 @@ sg.draw = function () {
   // then 'this' does indeed become the game object.
 
   if (! sg.gameOver) {
-  sg.ctx.clearRect(0, 0, sg.canvas.width, sg.canvas.height);
-  sg.ball.draw(sg.ctx);
-  sg.ball.step();
-  sg.paddle.draw(sg.ctx);
-  sg.paddle.step();
-    }
+    sg.ctx.clearRect(0, 0, sg.canvas.width, sg.canvas.height);
+    sg.walls.draw(sg.ctx);
+    sg.ball.draw(sg.ctx);
+    (! sg.paused) && sg.ball.step();
+    sg.paddle.draw(sg.ctx);
+    sg.paddle.step();
+  }
   else {
     window.clearInterval(sg.drawAction); // stop the world
     document.write ("<p>Game over!</p><p>Reload page to play again.</p>");
