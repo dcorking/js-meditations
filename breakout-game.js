@@ -42,22 +42,32 @@ BG.ctx = BG.canvas.getContext("2d");
 BG.paddle = {
   height: 10,
   width: 75,
-  speed: 3};
+  speed: 3
+};
 BG.ball = {
-  radius: 10};
-//initialize game
-BG.score = 0;
-BG.gameOver = false;
-// initialize ball
-// velocity
-BG.ball.dx = 2;  // rightwards
-BG.ball.dy = -2; // upwards
-// position
-BG.ball.x = BG.canvas.width / 2;
-BG.ball.y = BG.canvas.height - BG.paddle.height - BG.ball.radius + BG.ball.dy;
-// paddle starts in middle
-BG.paddle.x = (BG.canvas.width - BG.paddle.width ) / 2;
+  radius: 10
+};
+BG.wall = {
+  rowCount: 3,
+  columnCount: 5,
+  offsetTop: 30,
+  offsetLeft: 30
+};
+BG.wall.brick = {
+  width: 75,
+  height: 20,
+  padding: 10
+};
+BG.wall.bricks = [];
 
+BG.wall.build = function () {
+  for(c=0; c < this.columnCount; c++) {
+    this.bricks[c] = [];
+    for(r=0; r < this.rowCount; r++ ) {
+      this.bricks[c][r] = { x: 0, y: 0};
+    }
+  }
+};
 
 BG.ball.draw = function (ctx) {
   ctx.beginPath();
@@ -68,7 +78,7 @@ BG.ball.draw = function (ctx) {
 };
 
 BG.ball.step = function () {
-  // TODO poss. refactor to avoid referring
+  // TODO: poss. refactor to avoid referring
   // directly to BG ?
   // collision with top
   if (this.y - this.radius + this.dy < 0) {
@@ -115,6 +125,20 @@ BG.paddle.step = function () {
   };
 };
 
+BG.wall.draw = function () {
+  for(c=0; c < this.columnCount; c++) {
+    for(r=0; r < this.rowCount; r++) {
+      this.bricks[c][r].x = 0;
+      this.bricks[c][r].y = 0;
+      ctx.beginPath();
+      ctx.rect(0, 0, this.brick.width, this.brick.height);
+      ctx.fillStyle = "#0095DD";
+      ctx.fill();
+      ctx.closePath();
+    }
+  }
+};
+
 // Draw the world, then update it
 BG.draw = function () {
   // When setInterval invokes BG.draw, 'this' is the global object
@@ -139,6 +163,21 @@ BG.draw = function () {
 ////////////////////////////////////////////////////////
 // Main program
 ////////////////////////////////////////////////////////
+
+//initialize game
+BG.score = 0;
+BG.gameOver = false;
+// initialize ball
+// velocity
+BG.ball.dx = 2;  // rightwards
+BG.ball.dy = -2; // upwards
+// position
+BG.ball.x = BG.canvas.width / 2;
+BG.ball.y = BG.canvas.height - BG.paddle.height - BG.ball.radius + BG.ball.dy;
+// paddle starts in middle
+BG.paddle.x = (BG.canvas.width - BG.paddle.width ) / 2;
+// initialize wall
+// BG.wall.build();  no wall yet
 
 document.addEventListener("keydown", BG.keyDownHandler, false);
 document.addEventListener("keyup", BG.keyUpHandler, false);
