@@ -89,13 +89,21 @@ BG.ball.step = function () {
   };
   //only one ball, so lose it and it's game over
   if (this.y + this.radius + this.dy > BG.canvas.height ) {
-    BG.gameOver = true
+    BG.gameOver = true;
     };
   //move
   this.x += this.dx;
   this.y += this.dy;
 };
 
+BG.collisionDetection = function() {
+  for(c=0; c< BG.wall.columnCount; c++) {
+    for(r=0; r<BG.wall.rowCount; r++) {
+      var b = BG.wall.bricks[c][r];
+      // calculations
+    }
+  }
+}
 
 BG.paddle.draw = function (ctx) {
   ctx.beginPath();
