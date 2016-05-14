@@ -8,7 +8,7 @@
 // (CC-BY-SA), v2.5 or any later version.
 // http://creativecommons.org/licenses/by-sa/2.5/ --> Made by
 // following the tutorial at
-// https://developer.mozilla.org/en-US/docs/Games/Workflows/2D_Breakout_game_pure_JavaScript
+// https://developer.mozilla.org/en-US/docs/Games/Tutorials/2D_Breakout_game_pure_JavaScript
 
 // global singleton to contain game
 var BG = {
@@ -59,15 +59,6 @@ BG.wall.brick = {
   padding: 10
 };
 BG.wall.bricks = [];
-
-BG.wall.build = function () {
-  for(c=0; c < this.columnCount; c++) {
-    this.bricks[c] = [];
-    for(r=0; r < this.rowCount; r++ ) {
-      this.bricks[c][r] = { x: 0, y: 0};
-    }
-  }
-};
 
 BG.ball.draw = function (ctx) {
   ctx.beginPath();
@@ -125,13 +116,26 @@ BG.paddle.step = function () {
   };
 };
 
-BG.wall.draw = function () {
+BG.wall.build = function () {
+  for(c=0; c < this.columnCount; c++) {
+    this.bricks[c] = [];
+    for(r=0; r < this.rowCount; r++ ) {
+      this.bricks[c][r] = { x: 0, y: 0};
+    }
+  }
+};
+
+BG.wall.draw = function (ctx) {
   for(c=0; c < this.columnCount; c++) {
     for(r=0; r < this.rowCount; r++) {
-      this.bricks[c][r].x = 0;
-      this.bricks[c][r].y = 0;
+      var brickX = (c * (this.brick.width + this.brick.padding)) +
+            this.offsetLeft;
+      var brickY = (r * (this.brick.height + this.brick.padding)) +
+            this.offsetTop;
+      this.bricks[c][r].x = brickX;
+      this.bricks[c][r].y = brickY;
       ctx.beginPath();
-      ctx.rect(0, 0, this.brick.width, this.brick.height);
+      ctx.rect(brickX, brickY, this.brick.width, this.brick.height);
       ctx.fillStyle = "#0095DD";
       ctx.fill();
       ctx.closePath();
@@ -148,11 +152,12 @@ BG.draw = function () {
   // then 'this' does indeed become the game object.
 
   if (! BG.gameOver) {
-  BG.ctx.clearRect(0, 0, BG.canvas.width, BG.canvas.height);
-  BG.ball.draw(BG.ctx);
-  BG.ball.step();
-  BG.paddle.draw(BG.ctx);
-  BG.paddle.step();
+    BG.ctx.clearRect(0, 0, BG.canvas.width, BG.canvas.height);
+    BG.wall.draw(BG.ctx);
+    BG.ball.draw(BG.ctx);
+    BG.ball.step();
+    BG.paddle.draw(BG.ctx);
+    BG.paddle.step();
     }
   else {
     window.clearInterval(BG.drawAction); // stop the world
@@ -161,10 +166,10 @@ BG.draw = function () {
 };
 
 ////////////////////////////////////////////////////////
-// Main program
+// Main program                                       //
 ////////////////////////////////////////////////////////
 
-//initialize game
+// initialize game
 BG.score = 0;
 BG.gameOver = false;
 // initialize ball
@@ -177,7 +182,7 @@ BG.ball.y = BG.canvas.height - BG.paddle.height - BG.ball.radius + BG.ball.dy;
 // paddle starts in middle
 BG.paddle.x = (BG.canvas.width - BG.paddle.width ) / 2;
 // initialize wall
-// BG.wall.build();  no wall yet
+BG.wall.build();
 
 document.addEventListener("keydown", BG.keyDownHandler, false);
 document.addEventListener("keyup", BG.keyUpHandler, false);
