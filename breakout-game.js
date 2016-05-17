@@ -107,7 +107,7 @@ BG.wall.collisionDetection = function(ball) {
     for(r=0; r<BG.wall.rowCount; r++) {
       var brick = BG.wall.bricks[c][r];
       if (BG.wall.overlaps(ball, brick)) {
-        BG.wall.bricks[c][r] = { x: -100, y: -100 };
+        BG.wall.bricks[c][r].visible = false;
         ball.bounceY();
       }
     }
@@ -142,7 +142,7 @@ BG.wall.build = function () {
             this.offsetLeft;
       var brickY = (r * (this.brick.height + this.brick.padding)) +
             this.offsetTop;
-      this.bricks[c][r] = { x: 0, y: 0};
+      this.bricks[c][r] = { x: 0, y: 0, visible: true };
       this.bricks[c][r].x = brickX;
       this.bricks[c][r].y = brickY;
     }
@@ -153,20 +153,23 @@ BG.wall.build = function () {
 BG.wall.draw = function (ctx) {
   for(c=0; c < this.columnCount; c++) {
     for(r=0; r < this.rowCount; r++) {
-      var brickX = this.bricks[c][r].x
-      var brickY = this.bricks[c][r].y
-      ctx.beginPath();
-      ctx.rect(brickX, brickY, this.brick.width, this.brick.height);
-      ctx.fillStyle = "#0095DD";
-      ctx.fill();
-      ctx.closePath();
+      if (this.bricks[c][r].visible) {
+        var brickX = this.bricks[c][r].x;
+        var brickY = this.bricks[c][r].y;
+        ctx.beginPath();
+        ctx.rect(brickX, brickY, this.brick.width, this.brick.height);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+      }
     }
   }
 };
 
 // boolean
 BG.wall.overlaps = function (ball, brick) {
-  return (ball.x > brick.x &&
+  return (brick.visible &&
+          ball.x > brick.x &&
           ball.x < (brick.x + BG.wall.brick.width) &&
           ball.y > brick.y &&
           ball.y < (brick.y + BG.wall.brick.height));
