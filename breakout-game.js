@@ -60,6 +60,11 @@ BG.wall.brick = {
 };
 BG.wall.bricks = [];
 
+// bounce in the opposite Y direction, for example off a brick
+BG.ball.bounceY = function () {
+  this.dy = - this.dy;
+};
+
 BG.ball.draw = function (ctx) {
   ctx.beginPath();
   ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
@@ -102,11 +107,13 @@ BG.wall.collisionDetection = function(ball) {
   for(c=0; c< BG.wall.columnCount; c++) {
     for(r=0; r<BG.wall.rowCount; r++) {
       var brick = BG.wall.bricks[c][r];
-      // calculations
       if (BG.wall.overlaps(ball, brick)) {
-        console.log('overlapping brick: ' + brick);
-        BG.wall.erase(c, r);
+        console.log('overlapping brick: ');
+        console.log(brick);
+        BG.wall.bricks[c][r] = { x: 0, y: 0 }; // FIXME: erase the brick
         ball.bounceY();
+        console.log(BG.wall.bricks[c][r]);
+        console.log(BG.wall.bricks);
       }
     }
   }
@@ -131,6 +138,7 @@ BG.paddle.step = function () {
   };
 };
 
+// build a 2D array of bricks to represent a wall
 BG.wall.build = function () {
   for(c=0; c < this.columnCount; c++) {
     this.bricks[c] = [];
@@ -140,6 +148,7 @@ BG.wall.build = function () {
   }
 };
 
+// render a wall
 BG.wall.draw = function (ctx) {
   for(c=0; c < this.columnCount; c++) {
     for(r=0; r < this.rowCount; r++) {
@@ -160,11 +169,10 @@ BG.wall.draw = function (ctx) {
 
 // boolean
 BG.wall.overlaps = function (ball, brick) {
-  console.log("ball: " + ball + "\nbrick:" + brick);
-  ball.x > brick.x &&
-    ball.x < (brick.X + BG.wall.brick.width) &&
-    ball.y > brick.y &&
-    ball.y < (brick.Y + BG.wall.brick.height);
+  return (ball.x > brick.x &&
+          ball.x < (brick.x + BG.wall.brick.width) &&
+          ball.y > brick.y &&
+          ball.y < (brick.y + BG.wall.brick.height));
 }
 
 // Draw the world, then update it
