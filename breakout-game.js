@@ -103,8 +103,8 @@ BG.ball.step = function () {
 };
 
 BG.wall.collisionDetection = function(ball) {
-  for(c=0; c< BG.wall.columnCount; c++) {
-    for(r=0; r<BG.wall.rowCount; r++) {
+  for(var c=0; c< BG.wall.columnCount; c++) {
+    for(var r=0; r<BG.wall.rowCount; r++) {
       var brick = BG.wall.bricks[c][r];
       if (BG.wall.overlaps(ball, brick)) {
         BG.wall.bricks[c][r].visible = false;
@@ -135,9 +135,9 @@ BG.paddle.step = function () {
 
 // build a 2D array of bricks to represent a wall
 BG.wall.build = function () {
-  for(c=0; c < this.columnCount; c++) {
+  for(var c=0; c < this.columnCount; c++) {
     this.bricks[c] = [];
-    for(r=0; r < this.rowCount; r++ ) {
+    for(var r=0; r < this.rowCount; r++ ) {
       var brickX = (c * (this.brick.width + this.brick.padding)) +
             this.offsetLeft;
       var brickY = (r * (this.brick.height + this.brick.padding)) +
@@ -151,8 +151,8 @@ BG.wall.build = function () {
 
 // render a wall
 BG.wall.draw = function (ctx) {
-  for(c=0; c < this.columnCount; c++) {
-    for(r=0; r < this.rowCount; r++) {
+  for(var c=0; c < this.columnCount; c++) {
+    for(var r=0; r < this.rowCount; r++) {
       if (this.bricks[c][r].visible) {
         var brickX = this.bricks[c][r].x;
         var brickY = this.bricks[c][r].y;
