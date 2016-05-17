@@ -107,12 +107,8 @@ BG.wall.collisionDetection = function(ball) {
     for(r=0; r<BG.wall.rowCount; r++) {
       var brick = BG.wall.bricks[c][r];
       if (BG.wall.overlaps(ball, brick)) {
-        console.log('overlapping brick: ');
-        console.log(brick);
-        BG.wall.bricks[c][r] = { x: 0, y: 0 }; // FIXME: erase the brick
+        BG.wall.bricks[c][r] = { x: -100, y: -100 };
         ball.bounceY();
-        console.log(BG.wall.bricks[c][r]);
-        console.log(BG.wall.bricks);
       }
     }
   }
@@ -142,7 +138,13 @@ BG.wall.build = function () {
   for(c=0; c < this.columnCount; c++) {
     this.bricks[c] = [];
     for(r=0; r < this.rowCount; r++ ) {
+      var brickX = (c * (this.brick.width + this.brick.padding)) +
+            this.offsetLeft;
+      var brickY = (r * (this.brick.height + this.brick.padding)) +
+            this.offsetTop;
       this.bricks[c][r] = { x: 0, y: 0};
+      this.bricks[c][r].x = brickX;
+      this.bricks[c][r].y = brickY;
     }
   }
 };
@@ -151,12 +153,8 @@ BG.wall.build = function () {
 BG.wall.draw = function (ctx) {
   for(c=0; c < this.columnCount; c++) {
     for(r=0; r < this.rowCount; r++) {
-      var brickX = (c * (this.brick.width + this.brick.padding)) +
-            this.offsetLeft;
-      var brickY = (r * (this.brick.height + this.brick.padding)) +
-            this.offsetTop;
-      this.bricks[c][r].x = brickX;
-      this.bricks[c][r].y = brickY;
+      var brickX = this.bricks[c][r].x
+      var brickY = this.bricks[c][r].y
       ctx.beginPath();
       ctx.rect(brickX, brickY, this.brick.width, this.brick.height);
       ctx.fillStyle = "#0095DD";
@@ -222,4 +220,4 @@ document.addEventListener("keyup", BG.keyUpHandler, false);
 // repeatedly draw and update the world
 BG.drawAction = window.setInterval(
   function(){BG.draw();},
-  5);
+  10);
