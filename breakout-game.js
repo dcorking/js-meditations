@@ -87,20 +87,27 @@ BG.ball.step = function () {
       this.x + this.radius + this.dx > BG.canvas.width ) {
     this.dx = - this.dx;
   };
-  //only one ball, so lose it and it's game over
+  // only one ball, so lose it and it's game over
   if (this.y + this.radius + this.dy > BG.canvas.height ) {
     BG.gameOver = true;
-    };
+  };
+  // collision with a brick
+  BG.wall.collisionDetection(this);
   //move
   this.x += this.dx;
   this.y += this.dy;
 };
 
-BG.collisionDetection = function() {
+BG.wall.collisionDetection = function(ball) {
   for(c=0; c< BG.wall.columnCount; c++) {
     for(r=0; r<BG.wall.rowCount; r++) {
-      var b = BG.wall.bricks[c][r];
+      var brick = BG.wall.bricks[c][r];
       // calculations
+      if (BG.wall.overlaps(ball, brick)) {
+        console.log('overlapping brick: ' + brick);
+        BG.wall.erase(c, r);
+        ball.bounceY();
+      }
     }
   }
 }
@@ -151,11 +158,20 @@ BG.wall.draw = function (ctx) {
   }
 };
 
+// boolean
+BG.wall.overlaps = function (ball, brick) {
+  console.log("ball: " + ball + "\nbrick:" + brick);
+  ball.x > brick.x &&
+    ball.x < (brick.X + BG.wall.brick.width) &&
+    ball.y > brick.y &&
+    ball.y < (brick.Y + BG.wall.brick.height);
+}
+
 // Draw the world, then update it
 BG.draw = function () {
   // When setInterval invokes BG.draw, 'this' is the global object
   // so this doesn't refer to my game object
-  // When I wrap the callback in setInterval to an anonymous function, so:
+  // When I wrap the callback in setInterval to an anonymous function, as:
   //    function(){BG.draw()}
   // then 'this' does indeed become the game object.
 
