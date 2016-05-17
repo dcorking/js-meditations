@@ -109,10 +109,11 @@ BG.wall.collisionDetection = function(ball) {
       if (BG.wall.overlaps(ball, brick)) {
         BG.wall.bricks[c][r].visible = false;
         ball.bounceY();
+        BG.scorer.score += 1;
       }
     }
   }
-}
+};
 
 BG.paddle.draw = function (ctx) {
   ctx.beginPath();
@@ -132,6 +133,13 @@ BG.paddle.step = function () {
     this.x -= this.speed;
   };
 };
+
+BG.scorer = { score: 0 };
+BG.scorer.draw = function (ctx) {
+  ctx.font = "16px Arial";
+  ctx.fillStyle = "#0095DD"
+  ctx.fillText("Score: " + this.score, 8, 20)
+}
 
 // build a 2D array of bricks to represent a wall
 BG.wall.build = function () {
@@ -190,6 +198,7 @@ BG.draw = function () {
     BG.ball.step();
     BG.paddle.draw(BG.ctx);
     BG.paddle.step();
+    BG.scorer.draw(BG.ctx);
     }
   else {
     window.clearInterval(BG.drawAction); // stop the world
@@ -202,7 +211,6 @@ BG.draw = function () {
 ////////////////////////////////////////////////////////
 
 // initialize game
-BG.score = 0;
 BG.gameOver = false;
 // initialize ball
 // velocity
