@@ -58,7 +58,6 @@ BG.wall.brick = {
   height: 20,
   padding: 10
 };
-BG.wall.bricks = [];
 
 // bounce in the opposite Y direction, for example off a brick
 BG.ball.bounceY = function () {
@@ -214,6 +213,7 @@ BG.ball.y = BG.canvas.height - BG.paddle.height - BG.ball.radius + BG.ball.dy;
 // paddle starts in middle
 BG.paddle.x = (BG.canvas.width - BG.paddle.width ) / 2;
 // initialize wall
+BG.wall.bricks = [];
 BG.wall.build();
 
 document.addEventListener("keydown", BG.keyDownHandler, false);
